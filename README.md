@@ -1,2 +1,27 @@
-# Grabber
-Grabber is a telegramm chatbot that allows you to download YouTube and TikTok videos from a link and convert it to any format you like.
+MediaGrabber
+MediaGrabber - это чат-бот, который позволяет пользователям скачивать видео и аудиофайлы с популярных платформ, таких как YouTube и TikTok, по ссылке. Пользователи могут скачивать видео и аудио в офлайн-режиме для дальнейшего просмотра или прослушивания.
+
+1. Основные функции:
+Скачивание видео с YouTube и TikTok по ссылке
+Скачивание аудиофайлов в формате .mp3 с YouTube по ссылке
+Поддержка различных мессенджеров для удобного доступа к функциональности чат-бота
+
+2.Установка
+Клонируйте репозиторий с проектом:
+
+git clone https://github.com/your_username/MediaGrabber.git
+
+Установите зависимости проекта:
+
+cd MediaGrabber
+pip install -r requirements.txt
+
+Запустите чат-бота:
+
+python main.py
+
+Использование
+Для использования чат-бота MediaGrabber, отправьте /start и ссылку на видео или аудио с YouTube или TikTok. Чат-бот обработает ссылку и предоставит вам файл для скачивания.
+
+Лицензия
+Проект MediaGrabber распространяется под лицензией MIT. См. файл LICENSE для получения дополнительной информации.
