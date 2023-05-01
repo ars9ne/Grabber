@@ -53,7 +53,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await update.message.reply_text("Это не ссылка. Пожалуйста, отправьте мне ссылку на видео YouTube или TikTok.")
 
 def main() -> None:
-    """Запускает бота."""
+    """Запускает   бота."""
     # Создание приложения и передача ему токена бота.
     application = Application.builder().token("082210671:AAEy0qYiVCkXzdiTNDNaLjvUFPgi2W6i-4U").build()
 
