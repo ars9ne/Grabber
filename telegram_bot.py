@@ -98,6 +98,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     if await is_link(text):
         logger.info("Получена ссылка!")
+
         # Запуск download_script.py с аргументами в виде ссылки и формата
         desired_format = context.user_data.get("format", "mp3")
         result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
