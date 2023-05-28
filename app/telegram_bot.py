@@ -84,7 +84,7 @@ def sanitize_filename(filename: str) -> str:
 
 async def log_message(chat_id: int, username: str, text: str) -> None:
     """Логирует сообщения от пользователей."""
-    with open("messages_log.txt", "a", encoding="utf-8") as log_file:
+    with open("../messages_log.txt", "a", encoding="utf-8") as log_file:
         log_file.write(f"ChatID: {chat_id} Username: {username} Message: {text}\n")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
