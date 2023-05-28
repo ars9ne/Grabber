@@ -8,7 +8,7 @@ import pytube
 from pytube import YouTube
 from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
-
+script_directory = os.path.dirname(os.path.abspath(__file__))
 
 
 # Включение логирования
@@ -115,7 +115,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             else:
                 file_name = video_title + ".mp4"
 
-            file_path = os.path.join("C:\\Users\\RYZEN9\\Videos", file_name)
+            file_path = os.path.join(script_directory, file_name)
 
             # Отправка видео пользователю
             with open(file_path, "rb") as f:

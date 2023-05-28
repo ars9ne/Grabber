@@ -5,6 +5,9 @@ import time
 import sys
 import uuid
 import re
+script_directory = os.path.dirname(os.path.abspath(__file__))
+#пункт назначения для сохранения файла
+destination = script_directory
 
 time1 = time.time()
 
@@ -21,7 +24,7 @@ if orr == 'mp4':  # если запросили видео
 
     # Загружаем, используя очищенное название файла с расширением .mp4
     sanitized_title = sanitize_filename(yt.title)
-    ys.download('C:\\Users\\RYZEN9\\Videos', filename=f"{sanitized_title}.mp4")
+    ys.download(destination, filename=f"{sanitized_title}.mp4")
 
     print("Загрузка завершена!")
     print("--- %s seconds ---" % (time.time() - time1))  # Время загрузки
@@ -30,9 +33,6 @@ if orr == 'mp4':  # если запросили видео
 else:
     # извлекаем только аудио
     video = yt.streams.filter(only_audio=True).first()
-
-    # проверяем пункт назначения для сохранения файла
-    destination = 'C:\\Users\\RYZEN9\\Videos'
 
     # загружаем файл
     out_file = video.download(output_path=destination, filename=sanitize_filename(yt.title))
