@@ -3,13 +3,13 @@ import os
 import logging
 import subprocess
 import time
-
+import sys
 import pytube
 from pytube import YouTube
 from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 script_directory = os.path.dirname(os.path.abspath(__file__))
-
+token = str(sys.argv[1]) #получаем token телеграмм бота в виде аргумента при запуске скрипта
 
 # Включение логирования
 logging.basicConfig(
@@ -132,7 +132,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 def main() -> None:
     """Запускает бота."""
     # Создание приложения и передача ему токена бота.
-    application = Application.builder().token("6082210671:AAEy0qYiVCkXzdiTNDNaLjvUFPgi2W6i-4U").build()
+    application = Application.builder().token(token).build()
 
     # Обработка команд
     application.add_handler(CommandHandler(["mp3", "mp4"], handle_command))
