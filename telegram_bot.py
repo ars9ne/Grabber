@@ -72,10 +72,11 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def is_link(text: str) -> bool:
     """Проверяет, является ли сообщение ссылкой."""
-    if "www.youtube.com/watch" in text or "youtu.be/" in text:
+    if "www.youtube.com/watch" in text or "youtu.be/" in text or "twitter.com" in text or "x.com" in text:
         return True
     else:
         return False
+
 
 def sanitize_filename(filename: str) -> str:
     """Заменяет ненужные символы на _"""
@@ -85,7 +86,8 @@ def sanitize_filename(filename: str) -> str:
 async def log_message(chat_id: int, username: str, text: str) -> None:
     """Логирует сообщения от пользователей."""
     with open("messages_log.txt", "a", encoding="utf-8") as log_file:
-        log_file.write(f"ChatID: {chat_id} Username: {username} Message: {text}\n")
+        #log_file.write(f"ChatID: {chat_id} Username: {username} Message: {text}\n") по желанию)
+        pass
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обрабатывает сообщения."""
@@ -98,31 +100,62 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     if await is_link(text):
         logger.info("Получена ссылка!")
+        if "www.youtube.com/watch" in text or "youtu.be/" in text:
+            # Запуск download_script.py с аргументами в виде ссылки и формата
+            desired_format = context.user_data.get("format", "mp3")
+            result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
+            if result.returncode == 0:
+                await update.message.reply_text("Файл загружен. Отправляю вам его...")
 
-        # Запуск download_script.py с аргументами в виде ссылки и формата
-        desired_format = context.user_data.get("format", "mp3")
-        result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
-        if result.returncode == 0:
-            await update.message.reply_text("Файл загружен. Отправляю вам его...")
+                # Получение тайтла видео
+                yt = YouTube(text)
+                video_title = sanitize_filename(yt.title)
 
-            # Получение тайтла видео
-            yt = YouTube(text)
-            video_title = sanitize_filename(yt.title)
+                # Поиск пути файла на основе полученных форматов
+                if desired_format == "mp3":
+                    file_name = video_title + ".mp3"
+                else:
+                    file_name = video_title + ".mp4"
 
-            # Поиск пути файла на основе полученных форматов
-            if desired_format == "mp3":
-                file_name = video_title + ".mp3"
-            else:
-                file_name = video_title + ".mp4"
+                file_path = os.path.join(script_directory, file_name)
 
-            file_path = os.path.join(script_directory, file_name)
+                # Отправка видео пользователю
+                with open(file_path, "rb") as f:
+                    await context.bot.send_document(chat_id=chat_id, document=f)
 
-            # Отправка видео пользователю
-            with open(file_path, "rb") as f:
-                await context.bot.send_document(chat_id=chat_id, document=f)
+                # удаление загруженного файла
+                os.remove(file_path)
+        elif "twitter.com" in text or "x.com" in text:
+            text = text.replace("twitter.com", "fxtwitter.com")
+            # Запуск download_script.py с аргументами в виде ссылки и формата
+            desired_format = context.user_data.get("format", "mp3")
+            if str(desired_format) == "mp4":
+                text = text + ".mp4"
 
-            # удаление загруженного файла
-            os.remove(file_path)
+                result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
+                if result.returncode == 0:
+                    await update.message.reply_text("Файл загружен. Отправляю вам его...")
+
+                    # Получение тайтла видео
+
+                    video_title = "video_name"
+
+                    # Поиск пути файла на основе полученных форматов
+                    if desired_format == "mp3":
+                        file_name = video_title + ".mp3"
+                    else:
+                        file_name = video_title + ".mp4"
+
+                    file_path = os.path.join(script_directory, file_name)
+
+                    # Отправка видео пользователю
+                    with open(file_path, "rb") as f:
+                        await context.bot.send_document(chat_id=chat_id, document=f)
+
+                    # удаление загруженного файла
+                    os.remove(file_path)
+            elif str(desired_format) == "mp3":
+                await update.message.reply_text("Загрузка файлов в формате mp3 из твиттера не доступна")
         else:
             await update.message.reply_text("Ошибка при обработке ссылки. Попробуйте еще раз.")
     else:
