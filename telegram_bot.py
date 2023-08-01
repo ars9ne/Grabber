@@ -11,6 +11,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandl
 script_directory = os.path.dirname(os.path.abspath(__file__))
 token = str(sys.argv[1]) #получаем token телеграмм бота в виде аргумента при запуске скрипта
 
+
 # Включение логирования
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -52,7 +53,7 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет сообщение, когда пользователь вводит команду /help."""
-    await update.message.reply_text("Вы можете загрузить любое видео с YouTube или TikTok! Просто скинь ссылку на видео")
+    await update.message.reply_text("Вы можете загрузить любое видео с YouTube или Twitter! Просто скинь ссылку на видео")
 
 async def send_format_choice(update: Update) -> None:
     keyboard = [
@@ -103,28 +104,34 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         if "www.youtube.com/watch" in text or "youtu.be/" in text:
             # Запуск download_script.py с аргументами в виде ссылки и формата
             desired_format = context.user_data.get("format", "mp3")
-            result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
-            if result.returncode == 0:
-                await update.message.reply_text("Файл загружен. Отправляю вам его...")
+            yt = YouTube(text)
+            if yt.streams.get_by_itag(18).filesize < 49999550:
+                result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
+                if result.returncode == 0:
+                    await update.message.reply_text("Файл загружен. Отправляю вам его...")
+                    print("файл ок")
+                    # Получение тайтла видео
 
-                # Получение тайтла видео
-                yt = YouTube(text)
-                video_title = sanitize_filename(yt.title)
+                    video_title = sanitize_filename(yt.title)
 
-                # Поиск пути файла на основе полученных форматов
-                if desired_format == "mp3":
-                    file_name = video_title + ".mp3"
-                else:
-                    file_name = video_title + ".mp4"
+                    # Поиск пути файла на основе полученных форматов
+                    if desired_format == "mp3":
+                        file_name = video_title + ".mp3"
+                    else:
+                        file_name = video_title + ".mp4"
 
-                file_path = os.path.join(script_directory, file_name)
+                    file_path = os.path.join(script_directory, file_name)
 
-                # Отправка видео пользователю
-                with open(file_path, "rb") as f:
-                    await context.bot.send_document(chat_id=chat_id, document=f)
+                    # Отправка видео пользователю
+                    with open(file_path, "rb") as f:
+                        await context.bot.send_document(chat_id=chat_id, document=f)
 
-                # удаление загруженного файла
-                os.remove(file_path)
+                    # удаление загруженного файла
+                    os.remove(file_path)
+            else:
+                await update.message.reply_text("Телеграм бот не может отправлять файл весом больше 50МБ")
+
+
         elif "twitter.com" in text or "x.com" in text:
             text = text.replace("twitter.com", "fxtwitter.com")
             # Запуск download_script.py с аргументами в виде ссылки и формата
@@ -165,7 +172,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 def main() -> None:
     """Запускает бота."""
     # Создание приложения и передача ему токена бота.
-    application = Application.builder().token(token).build()
+    application = Application.builder().token(token).write_timeout(200).read_timeout(200).connect_timeout(200).build()
 
     # Обработка команд
     application.add_handler(CommandHandler(["mp3", "mp4"], handle_command))

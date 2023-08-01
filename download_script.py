@@ -1,5 +1,6 @@
 import os
 import subprocess
+import pytube
 from pytube import YouTube
 import time
 import sys
@@ -22,14 +23,25 @@ def sanitize_filename(filename: str) -> str:
     return re.sub(r"[^\w\-_ ]", "_", filename.replace(" ", "_"))
 if "www.youtube.com/watch" in link or "youtu.be/" in link:
     if orr == 'mp4':  # если запросили видео
-        ys = yt.streams.get_highest_resolution()  # Получим максимально возможное разрешение видео
+        if yt.length < 300:
+            ys = yt.streams.get_highest_resolution()  # Получим максимально возможное разрешение видео
 
-        # Загружаем, используя очищенное название файла с расширением .mp4
-        sanitized_title = sanitize_filename(yt.title)
-        ys.download(destination, filename=f"{sanitized_title}.mp4")
+            # Загружаем, используя очищенное название файла с расширением .mp4
+            sanitized_title = sanitize_filename(yt.title)
+            ys.download(destination, filename=f"{sanitized_title}.mp4")
 
-        print("Загрузка завершена!")
-        print("--- %s seconds ---" % (time.time() - time1))  # Время загрузки
+            print("Загрузка завершена!")
+            print("--- %s seconds ---" % (time.time() - time1))  # Время загрузки
+        else:
+            ys = yt.streams.get_by_itag(18)  # Получим максимально возможное разрешение видео
+
+            # Загружаем, используя очищенное название файла с расширением .mp4
+            sanitized_title = sanitize_filename(yt.title)
+            ys.download(destination, filename=f"{sanitized_title}.mp4")
+
+            print("Загрузка завершена!")
+            print("--- %s seconds ---" % (time.time() - time1))  # Время загрузки
+
 
     # если запросили аудио
     else:
