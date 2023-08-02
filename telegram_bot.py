@@ -9,7 +9,7 @@ from pytube import YouTube
 from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 script_directory = os.path.dirname(os.path.abspath(__file__))
-token = str(sys.argv[1]) #получаем token телеграмм бота в виде аргумента при запуске скрипта
+token = "6082210671:AAEy0qYiVCkXzdiTNDNaLjvUFPgi2W6i-4U"
 
 
 # Включение логирования
