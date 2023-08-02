@@ -59,8 +59,7 @@ if "www.youtube.com/watch" in link or "youtu.be/" in link:
         # результат
         print(yt.title + " has been successfully downloaded.")
 elif "fxtwitter.com" in link or "x.com" in link:
-    link = link.split("?").pop(0)
-
+    link = link.split("?").pop(0)+".mp4"
     if orr == "mp4":
         urllib.request.urlretrieve(link, 'video_name.mp4')
     if orr == "mp3":
