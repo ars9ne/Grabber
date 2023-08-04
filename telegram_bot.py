@@ -167,7 +167,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         else:
             await update.message.reply_text("Ошибка при обработке ссылки. Попробуйте еще раз.")
     else:
-        await update.message.reply_text("Это не ссылка. Пожалуйста, отправьте мне ссылку на видео YouTube или TikTok.")
+        await update.message.reply_text("Это не ссылка. Пожалуйста, отправьте мне ссылку на видео YouTube или Twitter.")
 
 
 def main() -> None:
