@@ -12,7 +12,6 @@ script_directory = os.path.dirname(os.path.abspath(__file__))
 destination = script_directory
 
 time1 = time.time()
-
 link = str(sys.argv[1])  # Ссылка на видео
 orr = str(sys.argv[2])  # mp3 или mp4
 yt = YouTube(link)  # Cоздадим объект класса YouTube, и в качестве значения передадим введённую пользователем ссылку
