@@ -11,6 +11,7 @@ script_directory = os.path.dirname(os.path.abspath(__file__))
 #пункт назначения для сохранения файла
 destination = script_directory
 
+
 time1 = time.time()
 link = str(sys.argv[1])  # Ссылка на видео
 orr = str(sys.argv[2])  # mp3 или mp4
