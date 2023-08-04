@@ -51,6 +51,7 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     # Отправить сообщение с выбранным форматом
     format = context.user_data.get("format", "mp4")
 
+
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет сообщение, когда пользователь вводит команду /help."""
     await update.message.reply_text("Вы можете загрузить любое видео с YouTube или Twitter! Просто скинь ссылку на видео")

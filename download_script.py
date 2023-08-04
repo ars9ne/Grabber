@@ -21,6 +21,8 @@ yt = YouTube(link)  # Cоздадим объект класса YouTube, и в �
 def sanitize_filename(filename: str) -> str:
     """Заменяет ненужные символы на _"""
     return re.sub(r"[^\w\-_ ]", "_", filename.replace(" ", "_"))
+
+
 if "youtube.com" in link or "youtu.be/" in link:
     if orr == 'mp4':  # если запросили видео
         if yt.length < 300:
@@ -58,6 +60,8 @@ if "youtube.com" in link or "youtu.be/" in link:
 
         # результат
         print(yt.title + " has been successfully downloaded.")
+
+
 elif "fxtwitter.com" in link or "x.com" in link:
     link = link.split("?").pop(0)+".mp4"
     if orr == "mp4":
