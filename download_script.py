@@ -21,7 +21,7 @@ yt = YouTube(link)  # Cоздадим объект класса YouTube, и в �
 def sanitize_filename(filename: str) -> str:
     """Заменяет ненужные символы на _"""
     return re.sub(r"[^\w\-_ ]", "_", filename.replace(" ", "_"))
-if "www.youtube.com/watch" in link or "youtu.be/" in link:
+if "youtube.com" in link or "youtu.be/" in link:
     if orr == 'mp4':  # если запросили видео
         if yt.length < 300:
             ys = yt.streams.get_highest_resolution()  # Получим максимально возможное разрешение видео

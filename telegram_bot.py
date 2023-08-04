@@ -73,7 +73,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def is_link(text: str) -> bool:
     """Проверяет, является ли сообщение ссылкой."""
-    if "www.youtube.com/watch" in text or "youtu.be/" in text or "twitter.com" in text or "x.com" in text:
+    if "youtube.com/watch" in text or "youtu.be/" in text or "youtube.com/shorts" in text or "twitter.com" in text or "x.com" in text:
         return True
     else:
         return False
@@ -101,7 +101,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     if await is_link(text):
         logger.info("Получена ссылка!")
-        if "www.youtube.com/watch" in text or "youtu.be/" in text:
+        if "youtube.com/watch" in text or "youtu.be/" in text or "youtube.com/shorts" in text:
             # Запуск download_script.py с аргументами в виде ссылки и формата
             desired_format = context.user_data.get("format", "mp3")
             yt = YouTube(text)
