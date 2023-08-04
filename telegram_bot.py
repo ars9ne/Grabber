@@ -18,6 +18,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет сообщение, когда пользователь вводит команду /start."""
     user = update.effective_user
@@ -56,6 +57,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Отправляет сообщение, когда пользователь вводит команду /help."""
     await update.message.reply_text("Вы можете загрузить любое видео с YouTube или Twitter! Просто скинь ссылку на видео")
 
+
 async def send_format_choice(update: Update) -> None:
     keyboard = [
         [
@@ -68,9 +70,11 @@ async def send_format_choice(update: Update) -> None:
 
     await update.message.reply_text("Выберите формат для загрузки видео:", reply_markup=reply_markup)
 
+
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Функция эхо, не используется."""
     await update.message.reply_text("OK")
+
 
 async def is_link(text: str) -> bool:
     """Проверяет, является ли сообщение ссылкой."""
@@ -183,6 +187,7 @@ def main() -> None:
 
     # Запуск бота
     application.run_polling()
+
 
 if __name__ == "__main__":
     main()
