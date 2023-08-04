@@ -23,7 +23,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет сообщение, когда пользователь вводит команду /start."""
     user = update.effective_user
     await update.message.reply_html(
-        rf"Вы можете загрузить любое видео с YouTube или TikTok. Просто отправьте ссылку на него:",
+        rf"Вы можете загрузить любое видео с YouTube или Twitter. Просто отправьте ссылку на него:",
         reply_markup=ForceReply(selective=True),
     )
     await send_format_choice(update)
