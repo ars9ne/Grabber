@@ -27,6 +27,7 @@ class EnglishLang:
     not_a_link = "This is not a link. Please send me a link to a YouTube or Twitter video."
     languageselected = "Language selected"
 
+
 class LanguageManager:
     def __init__(self, lang='english'):
         self.lang = lang.lower()

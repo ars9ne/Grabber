@@ -12,7 +12,7 @@ from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMar
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-token = "6082210671:AAEy0qYiVCkXzdiTNDNaLjvUFPgi2W6i-4U"
+token = str(sys.argv[1])  # token
 
 lang_manager = languages.LanguageManager()
 lang_manager.set_language('russian')
