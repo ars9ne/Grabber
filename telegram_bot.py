@@ -5,12 +5,18 @@ import subprocess
 import time
 import sys
 import pytube
+import telegram
+import languages
 from pytube import YouTube
 from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
+
 script_directory = os.path.dirname(os.path.abspath(__file__))
 token = "6082210671:AAEy0qYiVCkXzdiTNDNaLjvUFPgi2W6i-4U"
 
+lang_manager = languages.LanguageManager()
+lang_manager.set_language('russian')
+mtext = lang_manager.get_text  # message text
 
 # Включение логирования
 logging.basicConfig(
@@ -28,6 +34,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
     await send_format_choice(update)
 
+
 async def handle_format_choice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     query.answer()
@@ -42,12 +49,23 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     command = update.message.text.lower()
     if command == "/mp3":
         context.user_data["format"] = "mp3"
-        await update.message.reply_text("Выбран формат mp3. Отправьте ссылку на видео для загрузки.")
+        await update.message.reply_text(mtext("mp3selected"))
     elif command == "/mp4":
         context.user_data["format"] = "mp4"
-        await update.message.reply_text("Выбран формат mp4. Отправьте ссылку на видео для загрузки.")
+        await update.message.reply_text(mtext("mp4selected"))
+    elif command == "/language":
+        context.user_data["languages"] = "english"
+        await update.message.reply_text("Select preferable language: /russian , /english")
+    elif command == "/english":
+        context.user_data["languages"] = "english"
+        lang_manager.set_language("english")
+        await update.message.reply_text(lang_manager.get_text('languageselected'))
+    elif command == "/russian":
+        context.user_data["languages"] = "russian"
+        lang_manager.set_language("russian")
+        await update.message.reply_text(lang_manager.get_text('languageselected'))
     else:
-        await update.message.reply_text("Неверная команда. Используйте /mp3 или /mp4 для выбора формата загрузки.")
+        pass
 
     # Отправить сообщение с выбранным форматом
     format = context.user_data.get("format", "mp4")
@@ -55,7 +73,7 @@ async def handle_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет сообщение, когда пользователь вводит команду /help."""
-    await update.message.reply_text("Вы можете загрузить любое видео с YouTube или Twitter! Просто скинь ссылку на видео")
+    await update.message.reply_text(mtext("start"))
 
 
 async def send_format_choice(update: Update) -> None:
@@ -68,7 +86,7 @@ async def send_format_choice(update: Update) -> None:
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Выберите формат для загрузки видео:", reply_markup=reply_markup)
+    await update.message.reply_text(mtext("choose_format"), reply_markup=reply_markup)
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -92,8 +110,9 @@ def sanitize_filename(filename: str) -> str:
 async def log_message(chat_id: int, username: str, text: str) -> None:
     """Логирует сообщения от пользователей."""
     with open("messages_log.txt", "a", encoding="utf-8") as log_file:
-        #log_file.write(f"ChatID: {chat_id} Username: {username} Message: {text}\n") по желанию)
+        # log_file.write(f"ChatID: {chat_id} Username: {username} Message: {text}\n") по желанию)
         pass
+
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Обрабатывает сообщения."""
@@ -111,9 +130,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             desired_format = context.user_data.get("format", "mp3")
             yt = YouTube(text)
             if yt.streams.get_by_itag(18).filesize < 49999550:
-                result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
+                result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True,
+                                        text=True, encoding="utf-8")
                 if result.returncode == 0:
-                    await update.message.reply_text("Файл загружен. Отправляю вам его...")
+                    await update.message.reply_text(mtext("sendfilenoti"))
                     print("файл ок")
                     # Получение тайтла видео
 
@@ -134,7 +154,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     # удаление загруженного файла
                     os.remove(file_path)
             else:
-                await update.message.reply_text("Телеграм бот не может отправлять файл весом больше 50МБ")
+                await update.message.reply_text(mtext("file_too_large"))
 
 
         elif "twitter.com" in text or "x.com" in text:
@@ -144,9 +164,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             if str(desired_format) == "mp4":
                 text = text + ".mp4"
 
-                result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True, text=True, encoding="utf-8")
+                result = subprocess.run(["python", "download_script.py", text, desired_format], capture_output=True,
+                                        text=True, encoding="utf-8")
                 if result.returncode == 0:
-                    await update.message.reply_text("Файл загружен. Отправляю вам его...")
+                    await update.message.reply_text(mtext("sendfilenoti"))
 
                     # Получение тайтла видео
 
@@ -167,11 +188,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     # удаление загруженного файла
                     os.remove(file_path)
             elif str(desired_format) == "mp3":
-                await update.message.reply_text("Загрузка файлов в формате mp3 из твиттера не доступна")
+                await update.message.reply_text(mtext("not_available"))
         else:
-            await update.message.reply_text("Ошибка при обработке ссылки. Попробуйте еще раз.")
+            await update.message.reply_text(mtext("link_processing_error"))
     else:
-        await update.message.reply_text("Это не ссылка. Пожалуйста, отправьте мне ссылку на видео YouTube или Twitter.")
+        await update.message.reply_text(mtext("not_a_link"))
 
 
 def main() -> None:
@@ -180,7 +201,7 @@ def main() -> None:
     application = Application.builder().token(token).write_timeout(200).read_timeout(200).connect_timeout(200).build()
 
     # Обработка команд
-    application.add_handler(CommandHandler(["mp3", "mp4"], handle_command))
+    application.add_handler(CommandHandler(["mp3", "mp4", "language", "english", "russian"], handle_command))
 
     # Обработка всех текстовых сообщений, не являющихся командами
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
