@@ -12,7 +12,7 @@ from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMar
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
-token = str(sys.argv[1])  # token
+token = "6600421528:AAHMBNVwqCFD-WNnMyYKKsLgMGF6jmuaOjs" # token
 
 lang_manager = languages.LanguageManager()
 lang_manager.set_language('russian')
@@ -159,6 +159,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
         elif "twitter.com" in text or "x.com" in text:
             text = text.replace("twitter.com", "fxtwitter.com")
+            text = text.replace("x.com", "fxtwitter.com")
             # Запуск download_script.py с аргументами в виде ссылки и формата
             desired_format = context.user_data.get("format", "mp3")
             if str(desired_format) == "mp4":
